@@ -15,6 +15,7 @@
     </defs>
     <text id="textCenter" filter="" class="hideText" x="" y="" font-size="20px"></text>
     <polygon *ngFor="let hotspot of getHotspots()"
+             [attr.id]="hotspot.name"
              [attr.fill]="hotspot.strokeColor"
              fill-opacity="0.0"
              [attr.stroke]="hotspot.strokeColor"

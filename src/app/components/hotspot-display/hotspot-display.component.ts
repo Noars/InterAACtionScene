@@ -7,6 +7,7 @@ import {HotspotModifyDialogComponent} from "../hotspot-modify-dialog/hotspot-mod
 import {HotspotDeleteDialogComponent} from "../hotspot-delete-dialog/hotspot-delete-dialog.component";
 import {DwellCursorService} from "../../services/dwell-cursor.service";
 import {SettingsService} from "../../services/settings.service";
+import {hotpink} from "color-name";
 
 declare const SVG: any;
 
@@ -94,11 +95,16 @@ export class HotspotDisplayComponent implements OnInit {
     event.target.setAttribute('fill-opacity', "0.5");
     if (hotspot.name.includes('Center')){
       let textCenter = document.querySelector('#textCenter');
+      let drawing = document.querySelector('#'+ hotspot.name.replace('Center', ''));
+
       textCenter.textContent = hotspot.name.replace('Center', '');
       textCenter.setAttribute('x', String(event.offsetX));
       textCenter.setAttribute('y', String(event.offsetY - 10));
       textCenter.setAttribute('class', 'showText');
       textCenter.setAttribute('filter', 'url(#background)');
+
+      drawing.setAttribute("fill", hotspot.strokeColor);
+      drawing.setAttribute('fill-opacity', "0.5");
     }
   };
 
@@ -152,20 +158,49 @@ export class HotspotDisplayComponent implements OnInit {
   }
 
   enter(event: PointerEvent, hotspot: Hotspot) {
-    if (this.settingsService.DWELL_TIME_ENABLED) {
-      this.dwellCursorService.updatePositionSVGPolygonElement((<HTMLElement>event.target), this.getPointsInNumber(hotspot));
+    if (this.settingsService.DWELL_TIME_ENABLED && (hotspot.name.includes('Center') == false)) {
+      let center = this.findCenter(hotspot);
+      this.dwellCursorService.updatePositionSVGPolygonElement((<HTMLElement>event.target), this.getPointsInNumber(center[0]));
       this.dwellCursorService.playToMax(this.settingsService.DWELL_TIME_TIMEOUT_VALUE);
       this.dwellTimer = window.setTimeout(() => {
         this.PlayAudio(hotspot)
+        this.showText(hotspot);
       }, this.settingsService.DWELL_TIME_TIMEOUT_VALUE);
     }
   }
 
   exit() {
     if (this.settingsService.DWELL_TIME_ENABLED) {
+      this.hideText();
       this.dwellCursorService.stop();
       window.clearTimeout(this.dwellTimer);
     }
   }
 
+  findCenter(hotspot){
+    if (this.selectedScene != undefined && this.selectedImage != undefined) {
+      return this.scenesService.SCENES[this.selectedScene].images[this.selectedImage].hotspots.filter(x => {
+          if (x.name == hotspot.name.concat('', 'Center')){
+            return x;
+          }
+        });
+    }
+  }
+
+  showText(hotspot){
+    let textCenter = document.querySelector('#textCenter');
+    let center = document.querySelector('#' + hotspot.name.concat('', 'Center'));
+    let pts: String[] = center.getAttribute('points').replace(/,/g, ' ').split(' ');
+    textCenter.textContent = hotspot.name;
+    textCenter.setAttribute('x', String(pts[0]));
+    textCenter.setAttribute('y', String(Number(pts[1]) - 10));
+    textCenter.setAttribute('class', 'showText');
+    textCenter.setAttribute('filter', 'url(#background)');
+  }
+
+  hideText(){
+    let textCenter = document.querySelector('#textCenter');
+    textCenter.setAttribute('class', 'hideText');
+    textCenter.setAttribute('filter', '');
+  }
 }
