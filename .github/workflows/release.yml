@@ -1,0 +1,47 @@
+on:
+  push:
+    branches:
+      - master
+
+name: Release Scene
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+
+      - name: Setup node
+        uses: actions/setup-node@master
+        with:
+          node-version: '10.x'
+
+      - name: Build prod
+        run: npm run build --prod
+
+      - name: Get Previous tag
+        id: previous-tag
+        uses: WyriHaximus/github-action-get-previous-tag@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Github Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.previous-tag.outputs.tag }}
+          release_name: InterAACtionScene-AFSR ${{ steps.previous-tag.outputs.tag }}
+          draft: false
+          prerelease: false
+
+      - name: Upload assets to Release
+        id: upload-assets
+        uses: csexton/release-asset-action@v2
+        with:
+          release-url: ${{ steps.create_release.outputs.upload_url }}
+          files: |
+            ./dist/InteraactionScene.tar.gz
+          github-token: ${{ secrets.GITHUB_TOKEN }}
