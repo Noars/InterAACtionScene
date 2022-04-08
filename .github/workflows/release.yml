@@ -13,23 +13,27 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-          
+
       - name: Setup node
         uses: actions/setup-node@master
         with:
           node-version: '10.x'
 
-      - name: Install Dependencies
-        run: npm install
-
-      - name: Build prod
-        run: npm run build --prod
-
-      - name: Get Previous tag
-        id: previous-tag
-        uses: WyriHaximus/github-action-get-previous-tag@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: New tag
+        id: new-tag
+        run: |
+          LATEST_RELEASE_INFO=$(curl -s https://api.github.com/repos/Noars/InteraactionScene/releases/latest)
+          NEW_VERSION_LINK=$(echo "$LATEST_RELEASE_INFO" | grep "browser_download_url.*InterAACtionScene*" | cut -d: -f2,3 | tr -d \")
+          NEW_VERSION=$( echo "${NEW_VERSION_LINK}" | cut -d/ -f9)
+          NEW_VERSION_NO_EXT=$( echo ${NEW_VERSION} | cut -d. -f1)
+          NEW_VERSION_NAME=$(echo "$LATEST_RELEASE_INFO" | grep "name.*InterAACtionScene*" | cut -d: -f2,3 | tr -d \" | head -n 1 | tr -d \,)
+          GET_TAG=$(echo "$NEW_VERSION_NAME" | cut -d " " -f3)
+          TAG_1=$(echo "$GET_TAG" | cut -d. -f1)
+          TAG_2=$(echo "$GET_TAG" | cut -d. -f2)
+          TAG_3=$(echo "$GET_TAG" | cut -d. -f3)
+          NEW_TAG=$(echo "$(( $TAG_3 + 1 ))")
+          TAG="${TAG_1}.${TAG_2}.${NEW_TAG}"
+          echo $TAG
 
       - name: Create Github Release
         id: create_release
@@ -38,7 +42,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.previous-tag.outputs.tag }}
-          release_name: InterAACtionScene-AFSR ${{ steps.previous-tag.outputs.tag }}
+          release_name: InterAACtionScene ${{ steps.new-tag.outputs }}
           draft: false
           prerelease: false
 
