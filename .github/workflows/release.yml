@@ -39,7 +39,7 @@ jobs:
           TAG_3=$(echo "$GET_TAG" | cut -d. -f3)
           NEW_TAG=$(echo "$(( $TAG_3 + 1 ))")
           TAG="${TAG_1}.${TAG_2}.${NEW_TAG}"
-          echo $TAG
+          echo ::set-output name=tag::$(echo $TAG)
 
       - name: Create Github Release
         id: create_release
