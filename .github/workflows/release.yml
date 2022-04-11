@@ -45,7 +45,7 @@ jobs:
           TAG_3=$(echo "$GET_TAG" | cut -d. -f3)
           NEW_TAG=$(echo "$(( $TAG_3 + 1 ))")
           TAG="${TAG_1}.${TAG_2}.${NEW_TAG}"
-          echo '::set-output name=tag::"$TAG"'
+          echo '::set-output name=tag::$(TAG)'
 
       - name: Create Github Release
         id: create_release
@@ -58,11 +58,15 @@ jobs:
           draft: false
           prerelease: false
 
+      - name: Tar gz
+        run: |
+          tar -czvf InteraactionScene.tar.gz ./dist/InterAACtionScene
+
       - name: Upload assets to Release
         id: upload-assets
         uses: csexton/release-asset-action@v2
         with:
           release-url: ${{ steps.create_release.outputs.upload_url }}
           files: |
-            ./dist/InteraactionScene.tar.gz
+            ./dist/Inter
           github-token: ${{ secrets.GITHUB_TOKEN }}
