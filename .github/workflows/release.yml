@@ -27,7 +27,7 @@ jobs:
 
       - name: Tar gz
         run: |
-          tar -czvf InteraactionScene.tar.gz ./dist/InterAACtionScene
+          tar -czvf InterAACtionScene.tar.gz ./dist/InterAACtionScene
 
       - name: New tag
         id: new-tag
@@ -63,5 +63,4 @@ jobs:
           release-url: ${{ steps.create_release.outputs.upload_url }}
           files: |
             InterAACtionScene.tar.gz
-            ./dist/InterAACtionScene.tar.gz
           github-token: ${{ secrets.GITHUB_TOKEN }}
