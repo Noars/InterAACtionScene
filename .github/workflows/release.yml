@@ -48,7 +48,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.new-tag.outputs.tag }}
-          release_name: InterAACtionScene ${{ steps.new-tag.outputs }}
+          release_name: InterAACtionScene ${{ steps.new-tag.outputs.tag }}
           draft: false
           prerelease: false
 
@@ -62,5 +62,5 @@ jobs:
         with:
           release-url: ${{ steps.create_release.outputs.upload_url }}
           files: |
-            ./dist/Inter
+            ./InterAACtionScene.tar.gz
           github-token: ${{ secrets.GITHUB_TOKEN }}
