@@ -25,6 +25,10 @@ jobs:
       - name: Build prod
         run: npm run build --prod
 
+      - name: Tar gz
+        run: |
+          tar -czvf InteraactionScene.tar.gz ./dist/InterAACtionScene
+
       - name: New tag
         id: new-tag
         run: |
@@ -41,7 +45,7 @@ jobs:
           TAG="${TAG_1}.${TAG_2}.${NEW_TAG}"
           echo ::set-output name=tag::$(echo $TAG)
 
-      - name: Create Github Release
+      - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
@@ -52,15 +56,12 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Tar gz
-        run: |
-          tar -czvf InteraactionScene.tar.gz ./dist/InterAACtionScene
-
-      - name: Upload assets to Release
+      - name: Upload Release
         id: upload-assets
         uses: csexton/release-asset-action@v2
         with:
           release-url: ${{ steps.create_release.outputs.upload_url }}
           files: |
-            ./InterAACtionScene.tar.gz
+            InterAACtionScene.tar.gz
+            ./dist/InterAACtionScene.tar.gz
           github-token: ${{ secrets.GITHUB_TOKEN }}
