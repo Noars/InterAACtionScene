@@ -25,12 +25,6 @@ jobs:
       - name: Build prod
         run: npm run build --prod
 
-      - name: Get Previous tag
-        id: previous-tag
-        uses: WyriHaximus/github-action-get-previous-tag@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: New tag
         id: new-tag
         run: |
@@ -54,7 +48,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.new-tag.outputs.tag }}
-          release_name: InterAACtionScene ${{ steps.new-tag.outputs.tag }}
+          release_name: InterAACtionScene ${{ steps.new-tag.outputs }}
           draft: false
           prerelease: false
 
