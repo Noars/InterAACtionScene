@@ -72,7 +72,5 @@ jobs:
           commit: ""
           prerelease: true
           draft: false
-          bodyFile: |
-            InterAACtionScene.tar.gz
-            InterAACtionScene.zip
-            InterAACtionSceneLigone.zip
+          bodyFile: "InterAACtionScene.tar.gz"
+
