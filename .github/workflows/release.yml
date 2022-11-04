@@ -73,4 +73,4 @@ jobs:
           commit: "master"
           prerelease: true
           draft: false
-          body: "InterAACtionScene.tar.gz"
+          artifacts: "InterAACtionScene.tar.gz"
