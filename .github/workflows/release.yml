@@ -75,5 +75,6 @@ jobs:
           commit: "master"
           prerelease: true
           draft: false
+          body: ""
           bodyFile: "InterAACtionScene.tar.gz"
 
