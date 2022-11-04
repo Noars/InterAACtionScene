@@ -73,4 +73,4 @@ jobs:
           commit: "master"
           prerelease: true
           draft: false
-          artifacts: "InterAACtionScene.tar.gz"
+          artifacts: "InterAACtionScene.zip,InterAACtionScene.tar.gz,InterAACtionSceneLigone.zip"
